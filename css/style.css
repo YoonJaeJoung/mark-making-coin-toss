@@ -1,0 +1,853 @@
+/* ======================================
+   DESIGN SYSTEM — Coin Toss Fountain Wish
+   ====================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ---- CSS Variables ---- */
+:root {
+  --color-bg-dark: #0a1628;
+  --color-bg-gradient-start: #0d1f3c;
+  --color-bg-gradient-end: #0a3d47;
+  --color-water-deep: #0e5f6e;
+  --color-water-light: #1a8a9e;
+  --color-gold: #d4a743;
+  --color-gold-light: #f0d68a;
+  --color-text: #e8e8ec;
+  --color-text-muted: #8a9bb5;
+  --color-accent: #00d4aa;
+  --color-accent-glow: rgba(0, 212, 170, 0.3);
+  --color-card-bg: rgba(255, 255, 255, 0.06);
+  --color-card-border: rgba(255, 255, 255, 0.1);
+  --color-card-hover: rgba(255, 255, 255, 0.12);
+  --color-danger: #ff4466;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 40px rgba(0, 212, 170, 0.15);
+  --transition-fast: 0.2s ease;
+  --transition-med: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---- Reset & Base ---- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: linear-gradient(135deg, var(--color-bg-gradient-start), var(--color-bg-gradient-end));
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Particles Background ---- */
+#particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  bottom: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-accent), transparent);
+  animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--particle-opacity, 0.2);
+  }
+  90% {
+    opacity: var(--particle-opacity, 0.2);
+  }
+  100% {
+    transform: translateY(-100vh) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* ---- Screen System ---- */
+.screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-med), visibility var(--transition-med);
+  z-index: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.screen.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 10;
+}
+
+/* ---- Typography ---- */
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+}
+
+.subtitle {
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+  font-weight: 300;
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: width 0.4s, height 0.4s, top 0.4s, left 0.4s;
+}
+
+.btn:active::after {
+  width: 300px;
+  height: 300px;
+  top: calc(50% - 150px);
+  left: calc(50% - 150px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-accent), #00b894);
+  color: #fff;
+  box-shadow: 0 4px 20px var(--color-accent-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px var(--color-accent-glow);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, var(--color-gold), #c9952a);
+  color: #1a1a2e;
+  box-shadow: 0 4px 20px rgba(212, 167, 67, 0.3);
+}
+
+.btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(212, 167, 67, 0.4);
+}
+
+.btn-ghost {
+  background: var(--color-card-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-card-border);
+  backdrop-filter: blur(10px);
+}
+
+.btn-ghost:hover {
+  background: var(--color-card-hover);
+  transform: translateY(-1px);
+}
+
+.btn-sm {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+}
+
+.btn-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* ---- Cards ---- */
+.card {
+  background: var(--color-card-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: all var(--transition-med);
+  cursor: pointer;
+}
+
+.card:hover {
+  background: var(--color-card-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+}
+
+.card.selected {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 30px var(--color-accent-glow), var(--shadow-card);
+}
+
+/* ---- Landing Screen ---- */
+#screen-landing .landing-content {
+  text-align: center;
+  max-width: 600px;
+}
+
+.landing-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  animation: coinBounce 2s ease-in-out infinite;
+}
+
+@keyframes coinBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+.landing-title {
+  background: linear-gradient(135deg, var(--color-gold-light), var(--color-gold), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+.landing-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.landing-buttons .btn {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 18px 32px;
+  font-size: 1.1rem;
+}
+
+.landing-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 32px 0 16px;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.landing-divider::before,
+.landing-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-card-border);
+}
+
+.view-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.view-buttons .btn {
+  font-size: 0.9rem;
+  padding: 10px 20px;
+}
+
+/* ---- Wish Form ---- */
+.form-container {
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+}
+
+.form-container h2 {
+  margin-bottom: 8px;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: border-color var(--transition-fast);
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-glow);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-accent);
+}
+
+.checkbox-group label {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+/* ---- Selection Grids ---- */
+.selection-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.selection-grid {
+  display: grid;
+  gap: 20px;
+  width: 100%;
+  max-width: 700px;
+}
+
+.selection-grid.fountains {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.selection-grid.coins {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 560px;
+}
+
+/* ---- Fountain Cards ---- */
+.fountain-card {
+  text-align: center;
+  overflow: hidden;
+  padding: 0;
+}
+
+.fountain-card .fountain-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  transition: transform var(--transition-med);
+}
+
+.fountain-card:hover .fountain-image {
+  transform: scale(1.05);
+}
+
+.fountain-card .fountain-info {
+  padding: 20px;
+}
+
+.fountain-card .fountain-name {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+
+.fountain-card .fountain-location {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.fountain-card .coin-count {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 12px;
+  background: rgba(0, 212, 170, 0.15);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--color-accent);
+}
+
+/* ---- Coin Cards ---- */
+.coin-card {
+  text-align: center;
+  padding: 20px 16px;
+}
+
+.coin-card .coin-image-wrapper {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #1a1a2e;
+  border: 2px solid rgba(255,255,255,0.1);
+  transition: all var(--transition-fast);
+}
+
+.coin-card:hover .coin-image-wrapper {
+  border-color: var(--color-gold);
+  box-shadow: 0 0 20px rgba(212, 167, 67, 0.3);
+}
+
+.coin-card.selected .coin-image-wrapper {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 25px var(--color-accent-glow);
+}
+
+.coin-card .coin-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coin-card .coin-name {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.coin-card .coin-origin {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+/* ---- Toss Screen ---- */
+#screen-toss {
+  padding: 0;
+}
+
+.toss-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+/* Main fountain view fills screen */
+.toss-main-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.toss-fountain-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#toss-hand-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* PIP webcam — top-right corner */
+.toss-pip {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 200px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  z-index: 15;
+  background: #000;
+}
+
+.toss-pip video {
+  width: 100%;
+  display: block;
+  transform: scaleX(-1);
+}
+
+.pip-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  text-align: center;
+  backdrop-filter: blur(4px);
+}
+
+.toss-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 15;
+}
+
+.toss-status {
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 10px 24px;
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(10px);
+  transition: all var(--transition-fast);
+}
+
+.status-loading { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+.status-no_hand { background: rgba(255, 255, 255, 0.1); color: #aaa; }
+.status-hand_detected { background: rgba(0, 212, 170, 0.2); color: var(--color-accent); }
+.status-tossing { background: rgba(212, 167, 67, 0.3); color: var(--color-gold-light); }
+.status-error { background: rgba(255, 68, 102, 0.2); color: var(--color-danger); }
+
+.toss-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .toss-pip {
+    width: 140px;
+    top: 10px;
+    right: 10px;
+  }
+}
+
+/* ---- Flying Coin Animation ---- */
+.flying-coin {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  z-index: 20;
+  pointer-events: none;
+  perspective: 400px;
+}
+
+.coin-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.coin-front, .coin-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  backface-visibility: hidden;
+  background: #1a1a2e;
+}
+
+.coin-back {
+  transform: rotateX(180deg);
+}
+
+.coin-front img, .coin-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- Result Screen ---- */
+#screen-result {
+  padding: 0;
+}
+
+.result-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.result-fountain-view {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+#result-fountain-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+#result-animation-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.result-panel {
+  padding: 24px;
+  background: linear-gradient(transparent, var(--color-bg-dark));
+  text-align: center;
+}
+
+#result-info h3 {
+  margin-bottom: 8px;
+}
+
+#result-info p {
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.wish-text {
+  color: var(--color-gold-light) !important;
+  font-style: italic;
+  font-size: 1.1rem;
+  margin-top: 8px !important;
+}
+
+/* ---- Fountain View Screen ---- */
+#screen-fountain-view {
+  padding: 0;
+}
+
+.fountain-view-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fountain-view-header {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10, 22, 40, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 5;
+}
+
+.fountain-view-header h2 {
+  font-size: 1.3rem;
+}
+
+#fountain-view-count {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.fountain-canvas-container {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+#fountain-view-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- Tooltip ---- */
+#coin-tooltip {
+  position: fixed;
+  z-index: 100;
+  background: rgba(10, 22, 40, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s;
+  max-width: 250px;
+}
+
+#coin-tooltip.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltip-coin-type {
+  color: var(--color-accent);
+}
+
+.tooltip-date {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.tooltip-wish {
+  color: var(--color-gold-light);
+  display: block;
+  margin-top: 4px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  .selection-grid.coins {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .coin-card .coin-image-wrapper {
+    width: 70px;
+    height: 70px;
+  }
+
+  .selection-grid.fountains {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-buttons .btn {
+    max-width: 100%;
+  }
+
+  .btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-group .btn {
+    width: 100%;
+  }
+}
+
+/* ---- Utility ---- */
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mt-4 { margin-top: 32px; }
+.text-center { text-align: center; }
+.text-muted { color: var(--color-text-muted); }
+
+/* ---- Water Shimmer Overlay for screens ---- */
+.screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(26, 138, 158, 0.08), transparent 60%),
+    radial-gradient(ellipse at 80% 30%, rgba(0, 212, 170, 0.05), transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}

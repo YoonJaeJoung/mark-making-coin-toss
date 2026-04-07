@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Toss a virtual coin into famous fountains and make a wish! An interactive webcam experience using hand detection.">
+  <title>Fountain Wish — Toss a Coin, Make a Wish</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪙</text></svg>">
+</head>
+<body>
+
+  <!-- Floating particles background -->
+  <div id="particles"></div>
+
+  <!-- Tooltip for coins on fountain view -->
+  <div id="coin-tooltip"></div>
+
+  <!-- ==================== SCREEN: Landing ==================== -->
+  <section id="screen-landing" class="screen active">
+    <div class="landing-content">
+      <div class="landing-icon">🪙</div>
+      <h1 class="landing-title">Fountain Wish</h1>
+      <p class="subtitle">
+        Toss a coin into a famous fountain using your webcam.<br>
+        Make a wish and leave your mark.
+      </p>
+
+      <div class="landing-buttons">
+        <button id="btn-practice" class="btn btn-ghost">
+          🎮 Practice Toss
+        </button>
+        <button id="btn-actual" class="btn btn-gold">
+          ✨ Make a Real Wish
+        </button>
+      </div>
+
+      <div class="landing-divider">View Fountains</div>
+
+      <div class="view-buttons">
+        <button id="btn-view-trevi" class="btn btn-ghost btn-sm">
+          🏛️ Trevi Fountain
+        </button>
+        <button id="btn-view-palseokdam" class="btn btn-ghost btn-sm">
+          🪨 Palseokdam Basin
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SCREEN: Wish Form ==================== -->
+  <section id="screen-wish-form" class="screen">
+    <div class="form-container">
+      <h2>✨ Make Your Wish</h2>
+      <p class="subtitle mt-1">Tell us your name and your wish before you toss.</p>
+
+      <form id="wish-form" class="mt-3">
+        <div class="form-group">
+          <label for="input-nickname">Your Nickname</label>
+          <input type="text" id="input-nickname" placeholder="Enter your name..." maxlength="30" required>
+        </div>
+
+        <div class="form-group">
+          <label for="input-wish">Your Wish</label>
+          <textarea id="input-wish" placeholder="What do you wish for..." maxlength="200"></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input type="checkbox" id="input-wish-visible" checked>
+            <label for="input-wish-visible">Make my wish visible to others</label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-gold" style="width:100%">
+          Continue →
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ==================== SCREEN: Fountain Select ==================== -->
+  <section id="screen-fountain-select" class="screen">
+    <div class="selection-header">
+      <h2>Choose a Fountain</h2>
+      <p class="subtitle">Where will you toss your coin?</p>
+    </div>
+
+    <div class="selection-grid fountains">
+      <!-- Trevi Fountain -->
+      <div class="card fountain-card" data-fountain="trevi" id="card-trevi">
+        <img class="fountain-image" src="assets/fountains/trevi.png" alt="Trevi Fountain, Rome">
+        <div class="fountain-info">
+          <div class="fountain-name">Trevi Fountain</div>
+          <div class="fountain-location">Rome, Italy</div>
+          <div class="coin-count">0 coins tossed</div>
+        </div>
+      </div>
+
+      <!-- Palseokdam Basin -->
+      <div class="card fountain-card" data-fountain="palseokdam" id="card-palseokdam">
+        <img class="fountain-image" src="assets/fountains/palseokdam.png" alt="Palseokdam Basin, Seoul">
+        <div class="fountain-info">
+          <div class="fountain-name">Palseokdam Basin</div>
+          <div class="fountain-location">Cheonggyecheon Stream, Seoul</div>
+          <div class="coin-count">0 coins tossed</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SCREEN: Coin Select ==================== -->
+  <section id="screen-coin-select" class="screen">
+    <div class="selection-header">
+      <h2>Choose Your Coin</h2>
+      <p class="subtitle">Pick the coin you'd like to toss</p>
+    </div>
+
+    <div class="selection-grid coins">
+      <!-- US Quarter -->
+      <div class="card coin-card" data-coin="us" id="card-us">
+        <div class="coin-image-wrapper">
+          <img src="assets/coins/us_front.png" alt="US Quarter">
+        </div>
+        <div class="coin-name">Quarter</div>
+        <div class="coin-origin">United States</div>
+      </div>
+
+      <!-- Euro -->
+      <div class="card coin-card" data-coin="euro" id="card-euro">
+        <div class="coin-image-wrapper">
+          <img src="assets/coins/euro_front.png" alt="1 Euro">
+        </div>
+        <div class="coin-name">1 Euro</div>
+        <div class="coin-origin">Europe</div>
+      </div>
+
+      <!-- Korean Won -->
+      <div class="card coin-card" data-coin="won" id="card-won">
+        <div class="coin-image-wrapper">
+          <img src="assets/coins/won_front.png" alt="100 Won">
+        </div>
+        <div class="coin-name">100 Won</div>
+        <div class="coin-origin">South Korea</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SCREEN: Toss ==================== -->
+  <section id="screen-toss" class="screen">
+    <div class="toss-container">
+      <!-- Main view: fountain background with hand skeleton overlay -->
+      <div class="toss-main-view">
+        <img id="toss-fountain-bg" class="toss-fountain-bg" src="" alt="Fountain">
+        <canvas id="toss-hand-canvas"></canvas>
+      </div>
+
+      <!-- PIP webcam in top-right corner -->
+      <div class="toss-pip">
+        <video id="toss-video" playsinline autoplay muted></video>
+        <div class="pip-label">📹 Camera</div>
+      </div>
+
+      <!-- Hidden canvas for MediaPipe processing (not displayed) -->
+      <canvas id="toss-detection-canvas" style="display:none;"></canvas>
+
+      <div class="toss-overlay">
+        <div id="toss-status" class="toss-status status-loading">
+          ⏳ Loading hand detection...
+        </div>
+        <div class="toss-buttons">
+          <button id="btn-toss-retry" class="btn btn-ghost btn-sm">🔄 Retry</button>
+          <button id="btn-toss-back" class="btn btn-ghost btn-sm">← Back</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SCREEN: Result ==================== -->
+  <section id="screen-result" class="screen">
+    <div class="result-container">
+      <div class="result-fountain-view">
+        <canvas id="result-fountain-canvas"></canvas>
+        <div id="result-animation-container"></div>
+      </div>
+
+      <div class="result-panel">
+        <div id="result-info">
+          <!-- Filled dynamically -->
+        </div>
+        <div class="btn-group mt-2">
+          <button id="btn-toss-again" class="btn btn-primary btn-sm">🪙 Toss Again</button>
+          <button id="btn-view-fountain" class="btn btn-ghost btn-sm">🔍 View Fountain</button>
+          <button id="btn-home" class="btn btn-ghost btn-sm">🏠 Home</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SCREEN: Fountain View ==================== -->
+  <section id="screen-fountain-view" class="screen">
+    <div class="fountain-view-container">
+      <div class="fountain-view-header">
+        <div>
+          <h2 id="fountain-view-title">Fountain</h2>
+          <div id="fountain-view-count" class="text-muted">0 wishes made here</div>
+        </div>
+        <button id="btn-fountain-back" class="btn btn-ghost btn-sm">← Back</button>
+      </div>
+      <div class="fountain-canvas-container">
+        <canvas id="fountain-view-canvas"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
