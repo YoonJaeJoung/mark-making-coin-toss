@@ -27,10 +27,10 @@ export class CoinTossAnimation {
       this.coinElement.innerHTML = `
         <div class="coin-inner">
           <div class="coin-front">
-            <img src="assets/coins/${coinType}_front.png" alt="coin front">
+            <img src="/assets/coins/${coinType}_front.png" alt="coin front">
           </div>
           <div class="coin-back">
-            <img src="assets/coins/${coinType}_back.png" alt="coin back">
+            <img src="/assets/coins/${coinType}_back.png" alt="coin back">
           </div>
         </div>
       `;

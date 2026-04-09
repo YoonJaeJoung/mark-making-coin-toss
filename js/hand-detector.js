@@ -32,7 +32,7 @@ export class HandDetector {
     this.coinType = coinType;
 
     this.coinImage = new Image();
-    this.coinImage.src = `assets/coins/${coinType}_front.png`;
+    this.coinImage.src = `/assets/coins/${coinType}_front.png`;
 
     this.setStatus('loading');
 
@@ -98,12 +98,37 @@ export class HandDetector {
 
   detect() {
     if (!this.isRunning) return;
-    const now = performance.now();
-    if (this.video.readyState >= 2) {
-      const results = this.handLandmarker.detectForVideo(this.video, now);
-      this.drawOnFountain(results);
-      this.processResults(results, now);
+    
+    try {
+      const now = performance.now();
+      
+      // Ensure strictly increasing timestamp for MediaPipe
+      if (now <= this.lastTime) {
+        this._animFrame = requestAnimationFrame(() => this.detect());
+        return;
+      }
+
+      if (this.video.readyState >= 2 && this.handLandmarker) {
+        const results = this.handLandmarker.detectForVideo(this.video, now);
+        
+        // Wrap drawing and processing separately so one doesn't kill the other
+        try {
+          this.drawOnFountain(results);
+        } catch (drawErr) {
+          console.error('Hand drawing error:', drawErr);
+        }
+
+        try {
+          this.processResults(results, now);
+        } catch (procErr) {
+          console.error('Hand processing error:', procErr);
+        }
+      }
+    } catch (err) {
+      console.error('Hand detection loop error:', err);
+      // Don't stop the loop, just log and continue to next frame
     }
+    
     this._animFrame = requestAnimationFrame(() => this.detect());
   }
 

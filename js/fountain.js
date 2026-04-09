@@ -25,7 +25,7 @@ function loadCoinImage(coinType) {
     }
   };
 
-  img.src = `assets/coins/${coinType}_front.png`;
+  img.src = `/assets/coins/${coinType}_front.png`;
   coinImageCache[coinType] = img;
   return img;
 }
@@ -74,13 +74,13 @@ export class FountainRenderer {
 
   async loadFountain(fountainName) {
     this.fountainName = fountainName;
-    const imgSrc = `assets/fountains/${fountainName}.png`;
+    const imgSrc = `/assets/fountains/${fountainName}.png`;
 
     return new Promise((resolve) => {
       const img = new Image();
-      img.onload = () => {
+      img.onload = async () => {
         this.fountainImage = img;
-        this.coins = getCoins(fountainName);
+        this.coins = await getCoins(fountainName);
         this.render();
         resolve();
       };

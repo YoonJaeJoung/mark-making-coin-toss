@@ -143,9 +143,9 @@ class App {
     }
   }
 
-  updateFountainCounts() {
-    const treviCoins = getCoins('trevi');
-    const palseokdamCoins = getCoins('palseokdam');
+  async updateFountainCounts() {
+    const treviCoins = await getCoins('trevi');
+    const palseokdamCoins = await getCoins('palseokdam');
 
     const treviCount = document.querySelector('[data-fountain="trevi"] .coin-count');
     const palseokdamCount = document.querySelector('[data-fountain="palseokdam"] .coin-count');
@@ -163,7 +163,7 @@ class App {
     const statusEl = document.getElementById('toss-status');
 
     // Set fountain background image
-    fountainBg.src = `assets/fountains/${this.state.fountain}.png`;
+    fountainBg.src = `/assets/fountains/${this.state.fountain}.png`;
 
     // Status updates
     this.handDetector.onStatusChange = (status) => {
@@ -224,10 +224,10 @@ class App {
         wish: this.state.wish,
         wishVisible: this.state.wishVisible
       };
-      saveCoin(coinData);
+      await saveCoin(coinData);
 
       // Reload coins and animate splash
-      this.fountainRenderer.coins = getCoins(this.state.fountain);
+      this.fountainRenderer.coins = await getCoins(this.state.fountain);
       const newCoin = this.fountainRenderer.coins[this.fountainRenderer.coins.length - 1];
       this.fountainRenderer.animateSplash(newCoin);
     } else {
@@ -302,7 +302,7 @@ class App {
     this.fountainRenderer.startAnimation();
 
     // Update coin count
-    const coins = getCoins(this.state.fountain);
+    const coins = await getCoins(this.state.fountain);
     document.getElementById('fountain-view-count').textContent =
       `${coins.length} wish${coins.length !== 1 ? 'es' : ''} made here`;
   }
