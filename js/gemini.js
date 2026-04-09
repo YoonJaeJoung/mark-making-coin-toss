@@ -31,6 +31,8 @@ export async function generateSpiritResponse(nickname, wish, coinType, fountain)
     ${personality}
     
     Provide a brief, mystical, and encouraging response to their wish (max 2 sentences).
+    - CRITICAL: You MUST specifically acknowledge or reference the content of their wish ("${wish}") to show you have truly listened. 
+    - Personalize the response based on the theme of their request.
     - If it's the Trevi Fountain, be romantic, grand, and use a touch of Italian flair (e.g., "Mio caro", "Destiny").
     - If it's Palseokdam, be calm, poetic, and use a touch of Korean/Zen wisdom (e.g., "The ripples of time", "Inyeon").
     - Respond directly to the user as if you are the fountain itself.

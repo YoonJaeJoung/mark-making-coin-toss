@@ -17,6 +17,8 @@ class App {
       wishVisible: true
     };
 
+    this.pollingInterval = null;
+
     this.screens = {};
     this.handDetector = new HandDetector();
     this.fountainRenderer = null;
@@ -140,6 +142,13 @@ class App {
     // Update fountain coin counts if on fountain select
     if (screenId === 'screen-fountain-select') {
       this.updateFountainCounts();
+    }
+    
+    // Manage polling based on screen
+    if (screenId === 'screen-fountain-view' || screenId === 'screen-result') {
+      this.startPollingCoins();
+    } else {
+      this.stopPollingCoins();
     }
   }
 
@@ -320,7 +329,45 @@ class App {
     if (this.fountainRenderer) {
       this.fountainRenderer.stopAnimation();
     }
+    this.stopPollingCoins();
     this.handDetector.stop();
+  }
+  
+  startPollingCoins() {
+    if (this.pollingInterval) return;
+    
+    // Initial fetch to ensure up to date when screen starts
+    this.poll();
+    
+    this.pollingInterval = setInterval(() => {
+      this.poll();
+    }, 10000); // Poll every 10 seconds
+  }
+  
+  stopPollingCoins() {
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
+    }
+  }
+  
+  async poll() {
+    if (!this.state.fountain || !this.fountainRenderer) return;
+    
+    const latestCoins = await getCoins(this.state.fountain);
+    
+    // Only update if there are new coins to avoid jittery re-renders
+    if (latestCoins.length > this.fountainRenderer.coins.length) {
+      const diff = latestCoins.length - this.fountainRenderer.coins.length;
+      console.log(`Polling: Found ${diff} new coins!`);
+      
+      // Update coins array
+      this.fountainRenderer.coins = latestCoins;
+      
+      // Optionally splash the very last one added by someone else
+      const newCoin = latestCoins[latestCoins.length - 1];
+      this.fountainRenderer.animateSplash(newCoin);
+    }
   }
 
   initParticles() {

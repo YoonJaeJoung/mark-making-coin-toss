@@ -295,7 +295,8 @@ export class FountainRenderer {
     if (!this.tooltip) return;
     let html = `<strong>${coin.nickname || 'Anonymous'}</strong>`;
     html += `<br><span class="tooltip-coin-type">${getCoinLabel(coin.coinType)}</span>`;
-    html += `<br><span class="tooltip-date">${new Date(coin.date).toLocaleDateString()}</span>`;
+    const dateStr = coin.date ? new Date(coin.date).toLocaleDateString() : 'Recently';
+    html += `<br><span class="tooltip-date">${dateStr}</span>`;
     if (coin.wishVisible && coin.wish) {
       html += `<br><em class="tooltip-wish">"${coin.wish}"</em>`;
     }
