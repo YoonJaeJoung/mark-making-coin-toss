@@ -4,6 +4,7 @@ import { saveCoin, getCoins } from './storage.js';
 import { FountainRenderer } from './fountain.js';
 import { HandDetector } from './hand-detector.js';
 import { CoinTossAnimation } from './coin-toss.js';
+import { generateSpiritResponse } from './gemini.js';
 
 class App {
   constructor() {
@@ -259,6 +260,34 @@ class App {
       `;
     }
 
+    // --- AI SPIRIT RESPONSE ---
+    const spiritContainer = document.getElementById('spirit-response-container');
+    const spiritText = document.getElementById('spirit-text');
+
+    if (this.state.mode === 'actual') {
+      spiritContainer.classList.remove('hidden');
+      spiritContainer.classList.add('loading');
+      spiritText.innerHTML = '✨ <span class="loading-dots">The spirit is contemplating your wish...</span>';
+
+      try {
+        const spiritMessage = await generateSpiritResponse(
+          this.state.nickname,
+          this.state.wish,
+          this.state.coinType,
+          this.state.fountain
+        );
+        
+        spiritContainer.classList.remove('loading');
+        // Simple typing effect or direct show
+        this.typeMessage(spiritText, spiritMessage);
+      } catch (err) {
+        spiritContainer.classList.remove('loading');
+        spiritText.textContent = "The fountain ripples in agreement. Your wish has been cast into the flow of time.";
+      }
+    } else {
+      spiritContainer.classList.add('hidden');
+    }
+
     this.fountainRenderer.startAnimation();
   }
 
@@ -309,6 +338,19 @@ class App {
       particle.style.width = particle.style.height = (4 + Math.random() * 8) + 'px';
       container.appendChild(particle);
     }
+  }
+
+  typeMessage(element, message, speed = 30) {
+    element.textContent = '';
+    let i = 0;
+    const timer = setInterval(() => {
+      if (i < message.length) {
+        element.textContent += message.charAt(i);
+        i++;
+      } else {
+        clearInterval(timer);
+      }
+    }, speed);
   }
 }
 

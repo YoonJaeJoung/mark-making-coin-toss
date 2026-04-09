@@ -4,6 +4,43 @@ An interactive website where users toss virtual coins into famous fountains and 
 
 This is a project for the joint class at NYU IDM from professors Tommy and Claire. The topic is mark-making / drawing tools, and this project explores the idea of tourists tossing coins into fountains as a form of mark-making.
 
+## ✨ Gemini AI Integration
+
+This project is now powered by **Gemini 1.5 Flash** to provide mystical feedback for your wishes. Each fountain has its own unique "Spirit" with a distinct personality and cultural tone.
+
+### Deployment on Vercel
+
+1. **Clone the repository** to your GitHub.
+2. **Deploy to Vercel**: Connect your repository to Vercel.
+3. **Environment Variables**: In your Vercel project settings, add the following environment variable:
+   - `VITE_GEMINI_API_KEY`: Your Google AI Studio API Key.
+4. **Build Settings**: Vercel should automatically detect the Vite project. If not, use:
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+   - Install Command: `npm install`
+
+### Local Development
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Create a `.env` file in the root:
+   ```env
+   VITE_GEMINI_API_KEY=your_api_key_here
+   ```
+3. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+
+## 📱 Responsive Experience
+
+The website has been optimized for all screen sizes:
+- **Mobile**: Vertical layout with optimized webcam PIP and touch-friendly selection grids.
+- **Glassmorphism UI**: Beautiful, translucent interface elements that feel premium and modern.
+- **Hand Gesture Detection**: Works across devices with webcam access.
+
 ## Features
 
 - **Practice Mode** — Choose a fountain and coin, toss freely without saving data
