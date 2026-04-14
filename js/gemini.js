@@ -28,15 +28,15 @@ export async function generateSpiritResponse(nickname, wish, coinType, fountain)
     You are the mystical "Spirit of the ${fountainLabel}". 
     A traveler named "${nickname}" has just tossed a "${coinLabel}" into your waters and made this wish: "${wish || "a secret wish"}".
     
-    ${personality}
+    Personality: ${personality}
     
-    Provide a brief, mystical, and encouraging response to their wish (max 2 sentences).
-    - CRITICAL: You MUST specifically acknowledge or reference the content of their wish ("${wish}") to show you have truly listened. 
+    Task: Provide a brief, mystical, and encouraging response to their wish (max 2 sentences).
+    - Acknowledge or reference the content of their wish ("${wish}") to show you have truly listened. 
     - Personalize the response based on the theme of their request.
     - If it's the Trevi Fountain, be romantic, grand, and use a touch of Italian flair (e.g., "Mio caro", "Destiny").
     - If it's Palseokdam, be calm, poetic, and use a touch of Korean/Zen wisdom (e.g., "The ripples of time", "Inyeon").
     - Respond directly to the user as if you are the fountain itself.
-    - Do not use markdown or emojis in the text.
+    - IMPORTANT: Output ONLY the mystical text. Do not use markdown, emojis, labels, or internal reasoning headers (like "Constraint Check").
   `;
 
   try {
@@ -51,6 +51,9 @@ export async function generateSpiritResponse(nickname, wish, coinType, fountain)
         generationConfig: {
           temperature: 0.8,
           maxOutputTokens: 100,
+          thinkingConfig: {
+            thinkingLevel: 'minimal'
+          }
         }
       })
     });
