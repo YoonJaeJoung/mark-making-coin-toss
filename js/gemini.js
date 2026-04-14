@@ -40,8 +40,8 @@ export async function generateSpiritResponse(nickname, wish, coinType, fountain)
   `;
 
   try {
-    // Using Gemini 3 Flash (Stable as of April 2026)
-    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-3-flash:generateContent?key=${API_KEY}`;
+    // Using Gemini 3 Flash Preview (v1beta as of April 2026)
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`;
     
     const response = await fetch(url, {
       method: 'POST',
@@ -57,7 +57,7 @@ export async function generateSpiritResponse(nickname, wish, coinType, fountain)
 
     if (!response.ok) {
       if (response.status === 404) {
-        console.error('Gemini 3 Flash not found. You may need to check the latest model IDs in AI Studio.');
+        console.error('Gemini 3 Flash Preview not found. You may need to check the latest model IDs in AI Studio.');
       }
       const errorData = await response.json();
       console.error('Gemini API Error Response:', errorData);

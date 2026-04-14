@@ -6,7 +6,7 @@ This is a project for the joint class at NYU IDM from professors Tommy and Clair
 
 ## ✨ Gemini AI Integration
 
-This project is now powered by **Gemini 1.5 Flash** to provide mystical feedback for your wishes. Each fountain has its own unique "Spirit" with a distinct personality and cultural tone.
+This project is now powered by **Gemini 3 Flash** to provide mystical feedback for your wishes. Each fountain has its own unique "Spirit" with a distinct personality and cultural tone.
 
 ### Deployment on Vercel
 
