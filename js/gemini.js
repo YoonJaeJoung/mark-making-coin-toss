@@ -4,7 +4,7 @@
  */
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+// Construction moved inside the function for robustness
 
 /**
  * Generates a mystical response based on the user's wish.
@@ -40,7 +40,10 @@ export async function generateSpiritResponse(nickname, wish, coinType, fountain)
   `;
 
   try {
-    const response = await fetch(API_URL, {
+    // Using Gemini 3 Flash (Stable as of April 2026)
+    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-3-flash:generateContent?key=${API_KEY}`;
+    
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -52,10 +55,20 @@ export async function generateSpiritResponse(nickname, wish, coinType, fountain)
       })
     });
 
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.error('Gemini 3 Flash not found. You may need to check the latest model IDs in AI Studio.');
+      }
+      const errorData = await response.json();
+      console.error('Gemini API Error Response:', errorData);
+      throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
+    }
+
     const data = await response.json();
     if (data.candidates && data.candidates[0].content.parts[0].text) {
       return data.candidates[0].content.parts[0].text.trim();
     } else {
+      console.warn('Gemini response format unexpected:', data);
       throw new Error('Invalid response from Gemini');
     }
   } catch (err) {
